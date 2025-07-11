@@ -159,19 +159,21 @@ import AmplitudeSwift
         let instanceName = args["instanceName"] as? String ?? Constants.Configuration.DEFAULT_INSTANCE
         let migrateLegacyData = args["migrateLegacyData"] as? Bool ?? true
 
-        let configuration = Configuration(
-            apiKey: apiKey,
-            instanceName: instanceName,
-            migrateLegacyData: migrateLegacyData)
-
-        // Configure custom storage if provided
+        // Create custom storage if provided
+        var customStorage: Storage? = nil
         if let storageProvider = args["storageProvider"] as? String {
-            if let customStorage = FlutterCustomStorageFactory.createStorage(from: storageProvider) {
-                configuration.storageProvider = customStorage
+            if let storage = FlutterCustomStorageFactory.createStorage(from: storageProvider) {
+                customStorage = storage
             } else {
                 print("Failed to create custom storage provider with configuration: \(storageProvider)")
             }
         }
+
+        let configuration = Configuration(
+            apiKey: apiKey,
+            instanceName: instanceName,
+            storageProvider: customStorage,
+            migrateLegacyData: migrateLegacyData)
 
         if let flushQueueSize = args["flushQueueSize"] as? Int {
             configuration.flushQueueSize = flushQueueSize
