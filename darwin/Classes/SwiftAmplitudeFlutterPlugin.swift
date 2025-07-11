@@ -164,6 +164,15 @@ import AmplitudeSwift
             instanceName: instanceName,
             migrateLegacyData: migrateLegacyData)
 
+        // Configure custom storage if provided
+        if let storageProvider = args["storageProvider"] as? String {
+            if let customStorage = FlutterCustomStorageFactory.createStorage(from: storageProvider) {
+                configuration.storageProvider = customStorage
+            } else {
+                print("Failed to create custom storage provider with configuration: \(storageProvider)")
+            }
+        }
+
         if let flushQueueSize = args["flushQueueSize"] as? Int {
             configuration.flushQueueSize = flushQueueSize
         }

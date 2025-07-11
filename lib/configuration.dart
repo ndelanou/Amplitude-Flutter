@@ -3,6 +3,7 @@ import 'constants.dart';
 import 'tracking_options.dart';
 import 'default_tracking.dart';
 import 'cookie_options.dart';
+import 'storage_provider.dart';
 
 class Configuration {
   /// Applicable to all platforms (iOS, Android, Web)
@@ -176,6 +177,20 @@ class Configuration {
   /// for more granular control. See [docs](https://amplitude.com/docs/sdks/analytics/browser/browser-sdk-2#autocapture) for more information.
   Autocapture autocapture;
 
+  /// iOS specific
+  ///
+  /// Custom storage provider for iOS. When set, this will be used instead of the default
+  /// file-based storage. This allows you to customize where and how Amplitude data is stored on iOS.
+  ///
+  /// Available options:
+  /// - [StorageProvider.documents] - Store in Documents directory (visible in Files app)
+  /// - [StorageProvider.library] - Store in Library directory (hidden from Files app) - Recommended
+  /// - [StorageProvider.cache] - Store in Cache directory (can be cleared by system)
+  /// - [StorageProvider.custom] - Store in a custom directory path
+  ///
+  /// See https://amplitude.com/docs/sdks/analytics/ios/ios-swift-sdk#custom-storage for more information.
+  StorageProvider? storageProvider;
+
   /// Configuration for Amplitude instance.
   ///
   /// Before initializing Amplitude instance, create a Configuration instance
@@ -220,6 +235,7 @@ class Configuration {
     this.transport = 'fetch',
     this.fetchRemoteConfig = false,
     this.autocapture = const AutocaptureOptions(),
+    this.storageProvider,
   })  : trackingOptions = trackingOptions ?? TrackingOptions(),
         cookieOptions = cookieOptions ?? CookieOptions() {
     this.instanceName =
@@ -265,6 +281,7 @@ class Configuration {
       'transport': transport,
       'fetchRemoteConfig': fetchRemoteConfig,
       'autocapture': Autocapture.toMapOrBool(autocapture),
+      'storageProvider': storageProvider?.configurationString,
       // This field doesn't belong to Configuration
       // Pass it for FlutterLibraryPlugin
       'library': '${Constants.packageName}/${Constants.packageVersion}'
