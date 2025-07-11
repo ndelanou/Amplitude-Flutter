@@ -162,11 +162,7 @@ import AmplitudeSwift
         // Create custom storage if provided
         var customStorage: Storage? = nil
         if let storageProvider = args["storageProvider"] as? String {
-            if let storage = FlutterCustomStorageFactory.createStorage(from: storageProvider) {
-                customStorage = storage
-            } else {
-                print("Failed to create custom storage provider with configuration: \(storageProvider)")
-            }
+            customStorage = FlutterCustomStorage(from: storageProvider)
         }
 
         let configuration = Configuration(
